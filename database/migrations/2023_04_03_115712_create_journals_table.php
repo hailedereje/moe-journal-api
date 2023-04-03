@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('department_id');
+            $table->string('institution');
+            $table->string('contributers');
+            $table->string("journal_file");
+            $table->string("status");
             $table->timestamps();
         });
     }
