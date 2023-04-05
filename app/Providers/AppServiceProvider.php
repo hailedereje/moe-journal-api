@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // $this->registerPolicies();
+
+        // Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        // Sanctum::setDefaultGuard('sanctum');
     }
 }

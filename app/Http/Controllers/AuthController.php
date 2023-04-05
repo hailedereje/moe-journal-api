@@ -4,82 +4,100 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
    
     public function login(Request $request){
 
-        $user = User::get()->where('email',$request->email)->first();
+        try{
 
-    if ($user->password == $request->password) {
-        $token = $this->generateToken($user);
-        $roles = $user->roles;
-        
-        foreach($roles as $role){
-            echo $role;
+                $request->validate(['email'=>'email|required','password'=>'required',]);
+                
+                $date = Carbon::now()->addDays(7);
+                $user = User::get()->where('email',$request->email)->first();
+                if ($user->password == $request->password) {
+                
+                $token = $user->createToken('token',['app-scope'],$date)->plainTextToken;
+                return response()->json(['token' => $token,'user'=>$user]);
+                }     
+                return response()->json(['error' => 'Invalid credentials'], 401);
+
+            }
+            catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage()],400);
         }
+        
+}
+    public function logout(Request $request){
 
-        return response()->json(['token' => $role->permissions->pluck('name')]);
-    } else {
-        return response()->json(['error' => 'Invalid credentials'], 401);
+        $user = $request->user();
+        $user->tokens()->delete();
+        return response()->json(['message'=>'SUCCESSFULLY LOGGED OUT'],200);
     }
-    }
-    public function users(Request $request)
-    {       
-            $user = ['users'=>User::all()];
-            // $user->roles
-            return response()->json($user);
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+        
+    public function registerUser(Request $request)
     {
-        $user = User::create($request->all());
-        $user->assignRole('MOE');
-        return response()->json(['user'=>$user],201);
+        try{
+                $userData = $request->validate([
+                    'name'=>'required',
+                    'email'=>'required|unique:users,email',
+                    'password'=>'required',
+                    'role'=>'required'
+                ]) ;
+
+                // $role = Role::findByName($request->role);
+                $user = User::create($userData);
+                // $user->assignRole($role);
+                return response()->json(['message'=>'user '.$user->name.' created','user'=>$user],201);
+            }
+                catch(\Exception $e){
+                    return response()->json(['error'=>$e->getMessage()],400);
+            }
+        
+       
     }
-    // $permissions = $roles->flatMap(function ($role) {
-    //     return $role->permissions;
-    // })->pluck('name')->unique();
-    public function generateToken(User $user){
-        // $user->assign
-        return $user->createToken('accesstoken')->plainTextToken;
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
+   
+    
+    
+    public function deleteUser(Request $request,string $id){
+    
+        if($request->user()->hasRole("MOE")){
+            
+            User::deleteAll();
+            PersonalAccessToken::truncate();
+            return response()->json([
+                'status'=>200,
+                'role'=>$request->user()->getRoleNames(),
+                'deleted'=>'deleted'
+            ]);
+        }
+        return response()->json(['message'=>'NOT ALLOWED'],401);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        //
+    public function users(){
+        $user = User::getUsers();
+        return response()->json(['users'=>$user],200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
+    public function search(Request $request)
     {
-        //
-    }
-
-    public function deleteAllUser(Request $request){
-        User::truncate();
+        
+        $keyword = $request->keyword;
+        $email = $request->email;
+        $users = User::query()
+                            ->where('name','like','%'.$keyword.'%')
+                            ->orWhere('name','<','%'.$keyword.'%')
+                            ->orWhere('email','like','%'.$email.'%')
+                            ->orWhere('email','<','%'.$email.'%')
+                            ->get()->pluck('name','email');
+        
         return response()->json([
-            'status'=>200,
-            'deleted'=>'deleted'
+            'jhi\'s '=>$users
         ]);
+
     }
 }
