@@ -5,15 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Journal extends Model
+class Status extends Model
 {
     use HasFactory;
     protected $fillable = [
-            'title',
-            'department_id',
-            'institution',
-            'contributors',
-            'journal_file',
-            'status'
+        'name'
     ];
 }

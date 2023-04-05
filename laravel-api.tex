@@ -1,0 +1,27 @@
+php artisan make:controller ProductController --api
+php artisan make:model Product --migration
+
+to access files in files stored in storage folder in public dir we need to run artisan 
+command "php artisan storage:link"
+
+intervation image file resize used to fit images in specific  
+
+array_merge() takes arrays and can be used to make
+array distructuring like in javascript and modify specific item
+
+eg. array_merge($data,['image'=>$imagePath])
+
+laravel telescope powerfull tool for tracking changes in our app
+using mailtrap to send email to login users (4:13)
+
+pluck()-> method
+
+$token = $user->createToken('accesstoken')->plainTextToken;
+/ $roles = Role::get()->where('name','EVAL')->first();
+        // $this->giveRole($user,$roles);
+        // $token = $user->tokens;
+        // $role = Role::findByName("MOE");
+        // $permissions = $role->permissions()->pluck('name');
+        // $roles = $user->getRoleNames();
+ 
+
