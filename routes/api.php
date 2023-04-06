@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JhiUserController;
 use App\Http\Controllers\PracticeController;
+use App\Http\Controllers\DepartmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +34,20 @@ Route::post('/jhi/edit/{id}',[JhiUserController::class,'edite']);
 Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Routes for department section
+Route::post('/department', [DepartmentController::class, 'newDepartment']);
+Route::get('/departments', [DepartmentController::class, 'getAllDepartments']);
+Route::patch('/department/edit/{id}', [DepartmentController::class, 'editDepartment']);
+// Route::delete('/department/delete/{id}', [DepartmentController::class, 'deleteDepartment']); 
+});
+
+Route::delete('/department/delete/{id}', [DepartmentController::class, 'deleteDepartment']); 
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
