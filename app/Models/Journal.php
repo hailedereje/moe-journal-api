@@ -4,16 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-class Journal extends Model
+// use Spatie\
+class Journal extends Model 
 {
     use HasFactory;
     protected $fillable = [
             'title',
-            'department_id',
+            'jhi_id',
             'institution',
             'contributers',
             'journal_file',
             'status'
     ];
+
+    public function jhi(){
+        $this->belongsTo(Jhi::class);
+    }
 }

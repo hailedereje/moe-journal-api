@@ -8,8 +8,8 @@ class FileController extends Controller
 {
     public static function addFile($file){
 
-        $filename =$file->getClientOriginalName();
-        $path = Storage::putFileAs('myfolder', $file,$filename);
+        // $filename =$file->getClientOriginalName();
+        $path = Storage::putFile('myfolder', $file);
         return $path;
         
     }

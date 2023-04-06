@@ -32,7 +32,9 @@ class Jhi extends Model
     // public function departments(){
     //     return $this->belongsToMany(Department::class);
     // }
-
+    public function journals(){
+        return $this->hasMany(Journal::class);
+    }
     public static function findByEmail(string $email){
        
         return Jhi::where('institution_email',$email)->first();
