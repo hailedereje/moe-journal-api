@@ -21,8 +21,19 @@ class AuthController extends Controller
                 $user = User::get()->where('email',$request->email)->first();
                 if ($user->password == $request->password) {
                 
-                $token = $user->createToken('token',['app-scope'],$date)->plainTextToken;
-                return response()->json(['token' => $token,'user'=>$user]);
+                    // getting user permissions as array
+                    // $role = User::findByEmail($request->email)->roles()->first();
+                    // $rolePermissions = $role->permissions()->pluck('name');
+                    // $permissions = [];
+
+                    // foreach($rolePermissions as $per){
+                    //     array_push($permissions,$per);
+                    // }
+                    
+                    // $token = $user->createToken('token',$permissions,$date)->plainTextToken;
+                    $token = $user->createToken('token',['app-scope'],$date)->plainTextToken;
+                    
+                    return response()->json(['token' => $token,'user'=>$user]);
                 }     
                 return response()->json(['error' => 'Invalid credentials'], 401);
 
@@ -49,9 +60,9 @@ class AuthController extends Controller
                     'role'=>'required'
                 ]) ;
 
-                // $role = Role::findByName($request->role);
+                $role = Role::findByName($request->role);
                 $user = User::create($userData);
-                // $user->assignRole($role);
+                $user->assignRole($role);
                 return response()->json(['message'=>'user '.$user->name.' created','user'=>$user],201);
             }
                 catch(\Exception $e){

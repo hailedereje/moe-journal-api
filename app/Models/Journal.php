@@ -12,7 +12,7 @@ class Journal extends Model
             'title',
             'department_id',
             'institution',
-            'contributors',
+            'contributers',
             'journal_file',
             'status'
     ];
