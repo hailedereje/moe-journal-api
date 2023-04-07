@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\response;
+use App\Http\Requests\DeleteDepartmentRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DepartmentController extends Controller
@@ -100,10 +101,9 @@ public function editDepartment(Request $request, $id)
 }
 
 
-public function deleteDepartment(Request $request, $id) {
-    // if($request->user()->hasRole("MOE")){
+public function deleteDepartment(Request $request, string $id) {
         try {
-
+            
             Department::findOrFail($id)->delete();
             return response()->json([
                 'status' => 1,
@@ -117,12 +117,7 @@ public function deleteDepartment(Request $request, $id) {
                 'code' => 404
             ]);
         }
-// }
-//     return response()->json([
-//         'status' => 0,
-//         'message' => 'you are not authorized to delete this user',
-//         'code' => 401
-// ]);
+
 
 }
 }

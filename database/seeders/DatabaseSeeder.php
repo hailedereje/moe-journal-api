@@ -19,5 +19,8 @@ class DatabaseSeeder extends Seeder
     //         'email' => 'test@example.com',
 
     //     ]);
+
+    // $this->call(RoleAndPermissionSeeder::class);    // php artisan db:seed
+
     }
 }
