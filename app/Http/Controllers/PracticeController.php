@@ -5,7 +5,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Jhi;
@@ -19,7 +19,7 @@ use Spatie\Permission\Models\Permission;
 class PracticeController extends Controller
 {
     
-    public function practice(Request $request)
+    public function practice_10(Request $request)
     {
         try{
 
@@ -57,5 +57,18 @@ class PracticeController extends Controller
             return response()->json(['error'=>$e->getMessage()]);
         }
         
+    }
+
+    public function practice(Request $request){
+        try{
+            $request->validate([
+                'name'=>'required|unique:departments,name,except,id'
+            ]);
+            $department = Department::create($request->all());
+            return response()->json(["message"=>"department created","department"=>$department],200);
+
+        }catch(\Exception $e){
+            return response()->json(["error"=>$e->getMessage()]);
+        }
     }
 }
