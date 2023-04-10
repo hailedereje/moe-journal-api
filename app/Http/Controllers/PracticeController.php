@@ -1,72 +1,74 @@
 <?php
 
+
+// this files is practice file where I test out my codes.
+
 namespace App\Http\Controllers;
 
-
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Redis;
+use App\Models\Jhi;
 use Spatie\Permission\Models\Role;
-use Illuminate\Validation\Rull;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Journal;
+
 use Spatie\Permission\Models\Permission;
+
 
 class PracticeController extends Controller
 {
-    public function __construct(){
-        // try{
-        //     $this->middleware(['auth:api']);
-
-        // }catch(\Exception $e){
-        //     return response()->json(['error'=>$e->getMessage()]);
-        // }
-    }
     
-    public function practice_1(Request $request){
+    public function practice_10(Request $request)
+    {
+        try{
 
-        // $user = User::findByEmail('haile@gmail.com');
-        // $r = Role::findById("1");
-        // $per = $r->permissions()->pluck('name');
-        // $user = User::findByEmail('MOE')->get();
-        // $r = Role::find("1");
-        // $r->permissions()->pluck('name');
-        // Permission::findByName("Register_users");
-        // $roles = $request->roles;
-        $Role = Role::all()->pluck('name');
-        // foreach($roles as $role){
-        //     Rull::in($Role);
-        // }
+            // $jhi = Jhi::find("1");
+            // return $jhi->journals;
+            $request->validate([
+                'title'=>'required',
+                'jhi_id'=>'required',
+                'contributers'=>'required',
+                // 'journal_file'=>'required',
+                'status'=>'required|in:passed,failed,pending'
+                ]);
+            
+            // $journal = Journal::create($request->except('journal_file'));
+            
+            // $path = FileController::addFile($request->journal_file);
+            // $path = $request->file('journal_file')->store('myfolder');
+            // $journal->update(['journal_file'=>$path]);
+
+
+            // return response()->json(['prod'=>$path]);
+            // $journal = Journal::find("1");
+
+            $files = $request->file();
+                foreach($files as $file){
+                    $file->store('myfolder');
+                }
+                // $file = $request->file('journal_file')->all();
+                // $path = $file->store('myfolder');
+            // 
+            return response()->json(['journals'=>'']);
+            // is_file($request->file('journal_file'))
+
+        }catch(\Exception $e){
+            return response()->json(['error'=>$e->getMessage()]);
+        }
         
-        return $request;
     }
 
     public function practice(Request $request){
+        try{
+            $request->validate([
+                'name'=>'required|unique:departments,name,except,id'
+            ]);
+            $department = Department::create($request->all());
+            return response()->json(["message"=>"department created","department"=>$department],200);
 
-        
-            $request->validate(['name'=>'required','permission'=>'required|array']);
-            $permissions = $request->permission;
-
-            foreach($permissions as $per){
-                try{
-
-                    Permission::findByName($per);
-                }
-                catch(\Exception $e){
-
-                    return response()->json(['message'=>$e->getMessage()]);
-                }
-            }
-            $role = Role::create(['name'=>$request->name]);
-            $role->givePermissionTo($permissions);
-
-
-            
-            // 
-
-        //     return response()->json(['message'=>$role]);
-        // }catch(\Exception $e){
-            // return response()->json(['message'=>$e->getMessage()]);
-        // }
+        }catch(\Exception $e){
+            return response()->json(["error"=>$e->getMessage()]);
+        }
     }
-    
 }

@@ -10,23 +10,22 @@ class JhiUserController extends Controller
 {
     public function registerJhiUser(Request $request)
     {
-        
-            try{
-                
-                $request->validate([
-                    'institution_name'=>'required',
-                    'institution_email'=>'required|unique:Jhis,institution_email',
-                    'password'=>'required'
-                ]);
+        try{
+            
+            $request->validate([
+                'institution_name'=>'required',
+                'institution_email'=>'required|unique:Jhis,institution_email',
+                'password'=>'required'
+            ]);
 
-                $user = Jhi::create($request->all());
-                return response()->json(['user'=>$user]);
+            $user = Jhi::create($request->all());
 
-                }catch(\Exception $e){
-                    return response()->json([
-                        'message'=>$e->getMessage()
-                    ],400);
-            }
+            return response()->json(['user'=>$user],200);
+
+        }
+            catch(\Exception $e){
+                return response()->json(['message'=>$e->getMessage()],400);
+        }
     }
 
     public function search(Request $request)
