@@ -18,3 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 /personalFiles
+/app/Http/Controllers/TableController.php
+/app/Http/Controllers/PracticeController.php

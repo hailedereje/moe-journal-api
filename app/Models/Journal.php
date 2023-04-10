@@ -14,10 +14,15 @@ class Journal extends Model
             'institution',
             'contributers',
             'journal_file',
-            'status'
+            'status',
+            'department'
     ];
 
     public function jhi(){
         $this->belongsTo(Jhi::class);
+    }
+
+    public function department(){
+        return $this->belongsTo(Department::class);
     }
 }

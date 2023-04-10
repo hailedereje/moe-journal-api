@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JhiUserController;
 use App\Http\Controllers\PracticeController;
+use App\Http\Controllers\TableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Route;
     Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 
+    Route::post('/tables/delete',[TableController::class,'deleteTable']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
