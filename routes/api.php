@@ -1,11 +1,12 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JhiUserController;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\DepartmentController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleAndPermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::get('/users',[AuthController::class,'users']);
-Route::post('/add',[AuthController::class,'registerUser'])->middleware('auth:sanctum');
 Route::delete('/delete',[AuthController::class,'deleteAllUser']);
 // ->middleware('auth:sanctum');
 Route::patch('/update',[AuthController::class,'update']);
@@ -37,6 +37,12 @@ Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 
 Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
+
+    //register users
+Route::post('/add',[AuthController::class,'registerUser']);
+
+
+
     // Routes for department section
 Route::post('/department', [DepartmentController::class, 'newDepartment']);
 Route::get('/departments', [DepartmentController::class, 'getAllDepartments']);
@@ -44,8 +50,25 @@ Route::patch('/department/edit/{id}', [DepartmentController::class, 'editDepartm
 Route::delete('/department/{id}', [DepartmentController::class, 'deleteDepartment']); 
 });
 
-// Route::delete('/department/delete/{id}', [DepartmentController::class, 'deleteDepartment']); 
 
+
+// Assign a role to a user
+Route::post('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'assignRole']);
+
+// Assign a permission to a user
+Route::post('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermission']);
+
+// Revoke a role from a user
+Route::delete('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'revokeRole']);
+
+// Revoke a permission from a user
+Route::delete('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermission']);
+
+
+// Assign a permission to a role
+Route::post('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermissionToRole']);
+// Revoke a permission from a role
+Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermissionFromRole']);
 
 
 
