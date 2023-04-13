@@ -49,11 +49,11 @@ class AuthController extends Controller
                     'role'=>'required'
                 ]) ;
 
-                // $role = Role::findByName($request->role);
-                $role = Role::findByName('MOE','api');
+                // // $role = Role::findByName($request->role);
+                // $role = Role::findByName('MOE','api');
                 $user = User::create($userData);
-                $user->assignRole($role);
                 // $user->assignRole($role);
+                // // $user->assignRole($role);
                 return response()->json(['message'=>'user '.$user->name.' created','user'=>$user],201);
             }
                 catch(\Exception $e){
