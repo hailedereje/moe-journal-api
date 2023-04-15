@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('institution');
-            $table->string('contributers');
+            // $table->string('contributers')->nullable();
+            $table->string('contributers')->default('');
             $table->string("journal_file");
             $table->string("status");
             $table->unsignedBigInteger('department_id');

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JhiUserController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleAndPermissionController;
@@ -51,24 +52,27 @@ Route::delete('/department/{id}', [DepartmentController::class, 'deleteDepartmen
 });
 
 
+   // Routes for the assigning the role and permission to the user
+Route::post('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'assignRole']); // Assign a role to a user
+Route::post('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermission']); // Assign a permission to a user
+Route::delete('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'revokeRole']); // Revoke a role from a user
+Route::delete('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermission']); // Revoke a permission from a user
 
-// Assign a role to a user
-Route::post('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'assignRole']);
-
-// Assign a permission to a user
-Route::post('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermission']);
-
-// Revoke a role from a user
-Route::delete('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'revokeRole']);
-
-// Revoke a permission from a user
-Route::delete('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermission']);
+  // Routes to assign or revoke the permission to/from the role model
+Route::post('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermissionToRole']); // Assign a permission to a role
+Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermissionFromRole']); // Revoke a permission from a role
 
 
-// Assign a permission to a role
-Route::post('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermissionToRole']);
-// Revoke a permission from a role
-Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermissionFromRole']);
+
+// Journal Routes
+Route::post('/journals', [JournalController::class, 'savePost']); // Submit a journal
+// Route::get('/journals/{institution_id}', [JournalController::class, 'indexByInstitution']); // Get journals by institution ID
+// Route::get('journals/{id}/search', [JournalController::class, 'searchByJHI']); // Search journals by JHI
+Route::get('/journals', [JournalController::class, 'index']); // Get all journals
+
+Route::delete('journals/{id}', [JournalController::class, 'destroy']); // Delete a journal
+Route::get('journals/{id}', [JournalController::class,'show']); // Get details about a journal
+// Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
 
 
 
