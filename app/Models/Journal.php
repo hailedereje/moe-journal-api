@@ -72,4 +72,14 @@ class Journal extends Model
             return response()->json(["error"=>$e->getMessage()]);
         }
     }
+
+    public function deleteJournal(string $id){
+        try{
+            Journal::find($id)->delete();
+            return response()->json(["status"=>"successfully deleted"],200);
+        }
+        catch(\Exception $e){
+            return response()->json(["error"=>$e->getMessage()]);
+        }
+    }
 }
