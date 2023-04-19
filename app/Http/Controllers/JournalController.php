@@ -6,4 +6,5 @@ use Illuminate\Http\Request;
 
 class JournalController extends Controller
 {
+    
 }
