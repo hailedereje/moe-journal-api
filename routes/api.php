@@ -7,6 +7,7 @@ use App\Http\Controllers\JhiUserController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\RoleAndPermissionController;
 
 /*
@@ -74,7 +75,11 @@ Route::delete('journals/{id}', [JournalController::class, 'destroy']); // Delete
 Route::get('journals/{id}', [JournalController::class,'show']); // Get details about a journal
 // Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
 
-
+   // Routes for profession 
+   Route::post('/profession', [ProfessionController::class, 'newProfession']);
+   Route::get('/professions', [ProfessionController::class, 'getAllProfessions']);
+   Route::patch('/profession/edit/{id}', [ProfessionController::class, 'editProfession']);
+   Route::delete('/profession/{id}', [ProfessionController::class, 'deleteProfession']); 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
