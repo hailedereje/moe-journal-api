@@ -37,11 +37,11 @@ Route::get('/jhi/users',[JhiUserController::class,'users']);
 Route::post('/jhi/edit/{id}',[JhiUserController::class,'edite']);
 Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
-
+Route::post('/add',[AuthController::class,'registerUser']);
 Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
 
     //register users
-Route::post('/add',[AuthController::class,'registerUser']);
+// Route::post('/add',[AuthController::class,'registerUser']);
 
 
 
@@ -80,6 +80,12 @@ Route::get('journals/{id}', [JournalController::class,'show']); // Get details a
    Route::get('/professions', [ProfessionController::class, 'getAllProfessions']);
    Route::patch('/profession/edit/{id}', [ProfessionController::class, 'editProfession']);
    Route::delete('/profession/{id}', [ProfessionController::class, 'deleteProfession']); 
+
+    //attaching and detaching Profession from the user
+    Route::post('/users/{userId}/professions/{professionId}', [ProfessionController::class,'attachProfessionToUser']);
+    Route::delete('/users/{userId}/professions/{professionId}', [ProfessionController::class,'detachProfessionFromUser']);
+    
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

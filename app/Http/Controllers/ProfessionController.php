@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Profession;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -43,6 +44,8 @@ class ProfessionController extends Controller
         
             return response()->json($response, 500);
         }
+
+        
     }
 
     //get all profession
@@ -116,4 +119,47 @@ public function deleteProfession(Request $request, string $id) {
 
 
 }
+
+// attaching user to the profession
+public function attachProfessionToUser(Request $request, $userId, $professionId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        // $user->professions()->attach($professionId);
+        $user->professions()->sync($professionId);
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Profession attached to user',
+            'code' => 200
+        ]);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 0,
+            'message' => 'User or Profession not found',
+            'code' => 404
+        ]);
+    }
+}
+
+public function detachProfessionFromUser(Request $request, $userId, $professionId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        $user->professions()->detach($professionId);
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Profession detached from user',
+            'code' => 200
+        ]);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 0,
+            'message' => 'User or Profession not found',
+            'code' => 404
+        ]);
+    }
+}
+
 }
