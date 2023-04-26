@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -19,7 +20,7 @@ class AuthController extends Controller
                 
                 $date = Carbon::now()->addDays(7);
                 $user = User::get()->where('email',$request->email)->first();
-                if ($user->password == $request->password) {
+                if ($user && Hash::check($request->password, $user->password))  {
                 
                 $token = $user->createToken('token',['app-scope'],$date)->plainTextToken;
                 return response()->json(['token' => $token,'user'=>$user]);
@@ -42,12 +43,23 @@ class AuthController extends Controller
     public function registerUser(Request $request)
     {
         try{
-                $userData = $request->validate([
-                    'name'=>'required',
-                    'email'=>'required|unique:users,email',
-                    'password'=>'required',
-                    'role_id' => 'required|exists:roles,id',
-                ]) ;
+            $userData = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'middle_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'phone_number' => 'required|string|max:20',
+                'address' => 'required|json',
+                'role_id' => 'required|exists:roles,id',
+                'password' => 'required|string|min:8',
+            ]);
+            
+                // $userData = $request->all();
+                // $userData['address'] = json_decode($userData['address'], true);
+                // $userData['address'] = json_decode($request->input('address'), true);
+                $userData['address'] = $request->input('address');
+                $userData['password'] = bcrypt($userData['password']);
+
 
                 // // $role = Role::findByName($request->role);
                 // $role = Role::findByName('MOE','api');

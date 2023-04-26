@@ -38,6 +38,7 @@ Route::post('/jhi/edit/{id}',[JhiUserController::class,'edite']);
 Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 Route::post('/add',[AuthController::class,'registerUser']);
+
 Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
 
     //register users
