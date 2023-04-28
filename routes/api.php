@@ -31,11 +31,16 @@ Route::get('/logout',[AuthController::class,'logout']);
 
 Route::post('/pra',[PracticeController::class,'practice']);
 
-Route::post('/jhi/add',[JhiUserController::class,'registerJhiUser']);
+//Routes related to JHI
+Route::post('/jhi/add',[JhiUserController::class,'registerJhi']);
 Route::post('/jhi/search',[JhiUserController::class,'search']);
-Route::get('/jhi/users',[JhiUserController::class,'users']);
-Route::post('/jhi/edit/{id}',[JhiUserController::class,'edite']);
+Route::get('/jhis',[JhiUserController::class,'jhis']);
+Route::patch('/jhi/edit/{id}',[JhiUserController::class,'editJhi']);
 Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
+
+ //attaching and detaching JHI from the user
+ Route::post('/users/{userId}/jhi/{jhiId}', [JhiUserController::class,'attachJhiToUser']);
+ Route::delete('/users/{userId}/jhi/{jhiId}', [JhiUserController::class,'detachJhiFromUser']);
 
 Route::post('/add',[AuthController::class,'registerUser']);
 

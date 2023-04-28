@@ -52,6 +52,7 @@ class AuthController extends Controller
                 'address' => 'required|json',
                 'role_id' => 'required|exists:roles,id',
                 'password' => 'required|string|min:8',
+                'jhi_id' => 'required|exists:jhis,id',
             ]);
             
                 // $userData = $request->all();

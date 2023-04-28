@@ -2,26 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Js;
+use App\Models\User;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
+
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Jhi extends Model
 {
     use HasFactory,HasApiTokens,HasRoles,HasPermissions;
 
     protected $fillable = [
-        'institution_name',
-        'institution_email',
-        
-        // 'institution_phoneNumber',
-        // 'application_letter',
-        // 'valid_credential',
-    
-        'password'
+            'name' ,
+            'code',
+            'issues_per_year',
+            'publications_per_year',
+            'location' ,
     ];
 
     protected $hidden = [
@@ -47,6 +45,11 @@ class Jhi extends Model
     public static function deleteAll(){
         Jhi::truncate();
         
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 
    

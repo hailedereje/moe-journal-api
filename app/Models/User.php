@@ -3,9 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Http\Controllers\JhiUserController;
 use App\Models\Profession;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,7 @@ class User extends Authenticatable
        'email',
        'phone_number',
        'address',
+       'jhi_id',
        'role_id',
        'password',
     //    'remember_token',
@@ -58,5 +60,9 @@ class User extends Authenticatable
     public function professions()
     {
         return $this->belongsToMany(Profession::class);
+    }
+    public function jhi()
+    {
+        return $this->belongsTo(JhiUserController::class);
     }
 }

@@ -22,9 +22,11 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('jhi_id')->default(1);
             $table->rememberToken();
             $table->timestamps();
-          
+            
+            $table->foreign('jhi_id')->references('id')->on('jhis');
             
            
         });

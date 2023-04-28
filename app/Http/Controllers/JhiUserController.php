@@ -3,24 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jhi;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Symfony\Contracts\Service\Attribute\Required;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class JhiUserController extends Controller
 {
-    public function registerJhiUser(Request $request)
+    // registering JHI
+    public function registerJhi(Request $request)
     {
+     
         
             try{
-                
                 $request->validate([
-                    'institution_name'=>'required',
-                    'institution_email'=>'required|unique:Jhis,institution_email',
-                    'password'=>'required'
+                'name' => 'required',
+                'code' => 'required|unique:jhis,code',
+                'issues_per_year' => 'required',
+                'publications_per_year' => 'required',
+                'location' => 'required',
+
                 ]);
 
-                $user = Jhi::create($request->all());
-                return response()->json(['user'=>$user]);
+                $newJhi = Jhi::create($request->all());
+                return response()->json([
+                'jhi' => $newJhi]);
 
                 }catch(\Exception $e){
                     return response()->json([
@@ -28,40 +34,31 @@ class JhiUserController extends Controller
                     ],400);
             }
     }
-
+// search JHI
     public function search(Request $request)
     {
         $keyword = $request->keyword;
-        $email = $request->email;
         $users = Jhi::query()
-                            ->where('institution_name','like','%'.$keyword.'%')
-                            ->orWhere('institution_name','<','%'.$keyword.'%')
-                            ->orWhere('institution_email','like','%'.$email.'%')
-                            ->orWhere('institution_email','<','%'.$email.'%')
+                            ->where('name','like','%'.$keyword.'%')
+                            ->orWhere('name','<','%'.$keyword.'%')
                             ->get();
-                            // ->pluck('name','email');
         return response()->json([
             'users'=>$users
         ]);
     }
-
-    public function users(){
-        return response()->json(Jhi::getUsers());
+// list of JHI
+    public function jhis(){
+        return response()->json(Jhi::all());
     }
-
-    public function edite(Request $request ,string $id){
+// edit the JHI
+    public function editJhi(Request $request ,string $id){
        
         try{
-            $request->validate([
-                'institution_name'=>'required',
-                'institution_email'=>'required',
-                'password'=>'required',  
-            ]);
 
-            $user  = Jhi::findOrFail($id);
-            $user->update($request->all());
+            $jhi  = Jhi::findOrFail($id);
+            $jhi->update($request->all());
 
-            return response()->json(['user'=>$user]);
+            return response()->json(['jhi'=>$jhi]);
 
         }catch(\Exception $e){
             return response()->json(['error'=>$e->getMessage()]);
@@ -78,4 +75,50 @@ class JhiUserController extends Controller
         }
 
     }
+
+
+
+    // attaching user to the profession
+public function attachJhiToUser(Request $request, $userId, $jhiId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        $jhi = Jhi::findOrFail($jhiId);
+
+        $user->jhi()->associate($jhi);
+        $user->save();
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'JHI attached to user',
+            'code' => 200
+        ]);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 0,
+            'message' => 'User or JHI not found',
+            'code' => 404
+        ]);
+    }
+}
+
+public function detachJhiFromUser(Request $request, $userId, $jhiId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        $user->jhis()->detach($jhiId);
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'JHI detached from user',
+            'code' => 200
+        ]);
+    } catch (ModelNotFoundException $e) {
+        return response()->json([
+            'status' => 0,
+            'message' => 'User or JHI not found',
+            'code' => 404
+        ]);
+    }
+}
 }
