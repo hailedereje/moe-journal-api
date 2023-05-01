@@ -11,4 +11,8 @@ class Department extends Model
     protected $fillable = [
         'name'  
     ];
+
+    public function journals() {
+        return $this->hasMany(Journal::class);
+    }
 }

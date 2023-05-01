@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('department_id');
             $table->string('institution');
-            $table->string('contributers');
+            // $table->string('contributers')->nullable();
+            $table->string('contributers')->default('');
             $table->string("journal_file");
             $table->string("status");
+            $table->unsignedBigInteger('department_id');
             $table->timestamps();
+
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 

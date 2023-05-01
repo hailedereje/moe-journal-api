@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Journal extends Model
 {
@@ -17,6 +17,10 @@ class Journal extends Model
             'journal_file',
             'status'
     ];
+
+    public function department() {
+        return $this->hasOne(Department::class);
+    }
 
     public function getJournals(){
         return response()->json(["journals"=>Journal::all()],200);

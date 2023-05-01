@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\JhiUserController;
-use App\Http\Controllers\PracticeController;
-use App\Http\Controllers\DepartmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JhiUserController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\PracticeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\RoleAndPermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::get('/users',[AuthController::class,'users']);
-Route::post('/add',[AuthController::class,'registerUser'])->middleware('auth:sanctum');
 Route::delete('/delete',[AuthController::class,'deleteAllUser']);
 // ->middleware('auth:sanctum');
 Route::patch('/update',[AuthController::class,'update']);
@@ -37,6 +38,12 @@ Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 
 Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
+
+    //register users
+Route::post('/add',[AuthController::class,'registerUser']);
+
+
+
     // Routes for department section
 Route::post('/department', [DepartmentController::class, 'newDepartment']);
 Route::get('/departments', [DepartmentController::class, 'getAllDepartments']);
@@ -44,8 +51,28 @@ Route::patch('/department/edit/{id}', [DepartmentController::class, 'editDepartm
 Route::delete('/department/{id}', [DepartmentController::class, 'deleteDepartment']); 
 });
 
-// Route::delete('/department/delete/{id}', [DepartmentController::class, 'deleteDepartment']); 
 
+   // Routes for the assigning the role and permission to the user
+Route::post('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'assignRole']); // Assign a role to a user
+Route::post('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermission']); // Assign a permission to a user
+Route::delete('/users/{user}/roles/{role}', [RoleAndPermissionController::class, 'revokeRole']); // Revoke a role from a user
+Route::delete('/users/{user}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermission']); // Revoke a permission from a user
+
+  // Routes to assign or revoke the permission to/from the role model
+Route::post('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'assignPermissionToRole']); // Assign a permission to a role
+Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionController::class, 'revokePermissionFromRole']); // Revoke a permission from a role
+
+
+
+// Journal Routes
+Route::post('/journals', [JournalController::class, 'savePost']); // Submit a journal
+// Route::get('/journals/{institution_id}', [JournalController::class, 'indexByInstitution']); // Get journals by institution ID
+// Route::get('journals/{id}/search', [JournalController::class, 'searchByJHI']); // Search journals by JHI
+Route::get('/journals', [JournalController::class, 'index']); // Get all journals
+
+Route::delete('journals/{id}', [JournalController::class, 'destroy']); // Delete a journal
+Route::get('journals/{id}', [JournalController::class,'show']); // Get details about a journal
+// Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
 
 
 
