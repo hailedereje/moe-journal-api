@@ -10,12 +10,12 @@ class Journal extends Model
 {
     use HasFactory;
     protected $fillable = [
-            'title',
-            'department_id',
-            'institution',
-            'contributors',
-            'journal_file',
-            'status'
+        'application_letter',
+        'journal_title',
+        'journal_zip_file',
+        'department_id',
+        'journal_description',
+        'contributors'
     ];
 
     public function department() {

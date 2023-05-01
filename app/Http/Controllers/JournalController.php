@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Journal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class JournalController extends Controller
 {
@@ -15,27 +16,36 @@ class JournalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function savePost(Request $request)
+
+    
+    
+    public function saveJournal(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'institution' => 'required',
-            'contributers' => 'required',
-            'journal_file' => 'required',
-            'status' => 'required',
-            'department_id' => 'required'
-
+        $validatedData = $request->validate([
+            'application_letter' => 'required',
+            'journal_title' => 'required',
+            'journal_zip_file' => 'required',
+            'department_id' => 'required|exists:departments,id',
+            'journal_description' => 'required',
+            'contributors' => 'nullable'
         ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $journal = Journal::create($request->all());
-
+    
+        // Upload and store the zip file
+        $file = $request->file('journal_zip_file');
+        $fileName = time().'_'.$file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads', $fileName, 'public');
+    
+        $journal = Journal::create([
+            'application_letter' => $validatedData['application_letter'],
+            'journal_title' => $validatedData['journal_title'],
+            'department_id' => $validatedData['department_id'],
+            'journal_description' => $validatedData['journal_description'],
+            'contributors' => $validatedData['contributors'],
+            'journal_zip_file' => $filePath
+        ]);
+    
         return response()->json(['data' => $journal], 201);
     }
-    
 
    
 

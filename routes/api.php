@@ -44,7 +44,7 @@ Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 Route::post('/add',[AuthController::class,'registerUser']);
 
-Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
+// Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
 
     //register users
 // Route::post('/add',[AuthController::class,'registerUser']);
@@ -56,7 +56,7 @@ Route::post('/department', [DepartmentController::class, 'newDepartment']);
 Route::get('/departments', [DepartmentController::class, 'getAllDepartments']);
 Route::patch('/department/edit/{id}', [DepartmentController::class, 'editDepartment']);
 Route::delete('/department/{id}', [DepartmentController::class, 'deleteDepartment']); 
-});
+// });
 
 
    // Routes for the assigning the role and permission to the user
@@ -72,14 +72,14 @@ Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionContro
 
 
 // Journal Routes
-Route::post('/journals', [JournalController::class, 'savePost']); // Submit a journal
+Route::post('/journal', [JournalController::class, 'saveJournal']); // Submit a journal
 // Route::get('/journals/{institution_id}', [JournalController::class, 'indexByInstitution']); // Get journals by institution ID
 // Route::get('journals/{id}/search', [JournalController::class, 'searchByJHI']); // Search journals by JHI
 Route::get('/journals', [JournalController::class, 'index']); // Get all journals
 
 Route::delete('journals/{id}', [JournalController::class, 'destroy']); // Delete a journal
 Route::get('journals/{id}', [JournalController::class,'show']); // Get details about a journal
-// Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
+Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
 
    // Routes for profession 
    Route::post('/profession', [ProfessionController::class, 'newProfession']);
