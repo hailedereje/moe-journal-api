@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('application_letter');
             $table->string('journal_title');
-            $table->string('journal_zip_file')->nullable();
+            $table->string('journal_zip_file');
             $table->unsignedBigInteger('department_id');
             $table->text('journal_description');
-            $table->text('contributors')->nullable();
+            $table->text('contributors');
             $table->timestamps();
 
             $table->foreign('department_id')->references('id')->on('departments');

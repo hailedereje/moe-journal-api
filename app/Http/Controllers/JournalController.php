@@ -17,24 +17,32 @@ class JournalController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    
-    
-    public function saveJournal(Request $request)
-    {
-        $validatedData = $request->validate([
-            'application_letter' => 'required',
-            'journal_title' => 'required',
-            'journal_zip_file' => 'required',
-            'department_id' => 'required|exists:departments,id',
-            'journal_description' => 'required',
-            'contributors' => 'nullable'
-        ]);
-    
-        // Upload and store the zip file
-        $file = $request->file('journal_zip_file');
-        $fileName = time().'_'.$file->getClientOriginalName();
+public function saveJournal(Request $request)
+{
+    $validatedData = $request->validate([
+        'application_letter' => ['required', 'string'],
+        'journal_title' => ['required', 'string'],
+        'journal_zip_file' => ['required','file','mimes:zip,rar','max:2048'],
+        'department_id' => ['required', 'exists:departments,id'],
+        'journal_description' => ['required', 'string'],
+        'contributors' => ['required', 'string']
+    ]);
+
+    $file = $request->file('journal_zip_file');
+
+    if (!$file->isValid()) {
+        return response()->json(['message' => 'Invalid file.'], 400);
+    }
+
+    $fileName = time() . '_' . $file->getClientOriginalName();
+
+    try {
         $filePath = $file->storeAs('uploads', $fileName, 'public');
-    
+    } catch (\Throwable $th) {
+        return response()->json(['message' => 'Failed to store file.'], 500);
+    }
+
+    try {
         $journal = Journal::create([
             'application_letter' => $validatedData['application_letter'],
             'journal_title' => $validatedData['journal_title'],
@@ -43,9 +51,19 @@ class JournalController extends Controller
             'contributors' => $validatedData['contributors'],
             'journal_zip_file' => $filePath
         ]);
-    
-        return response()->json(['data' => $journal], 201);
+    } catch (\Throwable $th) {
+        // delete the file if journal creation fails
+        Storage::delete($filePath);
+
+        return response()->json(['message' => 'Failed to create journal.'], 500);
     }
+
+    return response()->json(['data' => $journal], 201);
+}
+
+
+
+
 
    
 
