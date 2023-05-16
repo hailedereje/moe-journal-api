@@ -11,8 +11,8 @@ class ProfessionController extends Controller
 {
     //
      // add new proffession
-     public function newProfession(Request $request){
-      
+     public function newProfession(Request $request)
+     {
         try {
             $profData = $request->validate([
                 'name' => 'required|unique:Professions,name'
@@ -100,7 +100,8 @@ public function editProfession(Request $request, $id)
 }
 
 
-public function deleteProfession(Request $request, string $id) {
+public function deleteProfession(Request $request, string $id) 
+{
         try {
             
             Profession::findOrFail($id)->delete();
@@ -125,7 +126,6 @@ public function attachProfessionToUser(Request $request, $userId, $professionId)
 {
     try {
         $user = User::findOrFail($userId);
-        // $user->professions()->attach($professionId);
         $user->professions()->sync($professionId);
 
         return response()->json([

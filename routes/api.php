@@ -44,9 +44,9 @@ Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
 Route::post('/add',[AuthController::class,'registerUser']);
 
-// Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
 
-    //register users
+    // register users
 // Route::post('/add',[AuthController::class,'registerUser']);
 
 
@@ -56,7 +56,7 @@ Route::post('/department', [DepartmentController::class, 'newDepartment']);
 Route::get('/departments', [DepartmentController::class, 'getAllDepartments']);
 Route::patch('/department/edit/{id}', [DepartmentController::class, 'editDepartment']);
 Route::delete('/department/{id}', [DepartmentController::class, 'deleteDepartment']); 
-// });
+});
 
 
    // Routes for the assigning the role and permission to the user
