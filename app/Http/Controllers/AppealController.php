@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appeal;
+use Exception;
 use Illuminate\Http\Request;
 
 class AppealController extends Controller
@@ -92,5 +93,25 @@ class AppealController extends Controller
         ];
         return response()->json($response, 500);
     }
+}
+
+public function deleteAppeal(Request $request, string $id) {
+    try {
+        
+        Appeal::findOrFail($id)->delete();
+        return response()->json([
+            'status' => 1,
+            'message' => 'Department Deleted',
+            'code' => 200
+        ]);
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 0,
+            'message' => 'Appeal not found',
+            'code' => 404
+        ]);
+    }
+
+
 }
 }
