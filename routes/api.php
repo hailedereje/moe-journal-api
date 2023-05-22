@@ -7,6 +7,7 @@ use App\Http\Controllers\JhiUserController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\RoleAndPermissionController;
 
 /*
@@ -30,17 +31,23 @@ Route::get('/logout',[AuthController::class,'logout']);
 
 Route::post('/pra',[PracticeController::class,'practice']);
 
-Route::post('/jhi/add',[JhiUserController::class,'registerJhiUser']);
+//Routes related to JHI
+Route::post('/jhi/add',[JhiUserController::class,'registerJhi']);
 Route::post('/jhi/search',[JhiUserController::class,'search']);
-Route::get('/jhi/users',[JhiUserController::class,'users']);
-Route::post('/jhi/edit/{id}',[JhiUserController::class,'edite']);
+Route::get('/jhis',[JhiUserController::class,'jhis']);
+Route::patch('/jhi/edit/{id}',[JhiUserController::class,'editJhi']);
 Route::delete('/jhi/delete/{id}',[JhiUserController::class,'deleteJhi']);
 
+ //attaching and detaching JHI from the user
+ Route::post('/users/{userId}/jhi/{jhiId}', [JhiUserController::class,'attachJhiToUser']);
+ Route::delete('/users/{userId}/jhi/{jhiId}', [JhiUserController::class,'detachJhiFromUser']);
+
+Route::post('/add',[AuthController::class,'registerUser']);
 
 Route::middleware(['auth:sanctum', 'role:MOE'])->group(function () {
 
-    //register users
-Route::post('/add',[AuthController::class,'registerUser']);
+    // register users
+// Route::post('/add',[AuthController::class,'registerUser']);
 
 
 
@@ -65,15 +72,25 @@ Route::delete('/roles/{role}/permissions/{permission}', [RoleAndPermissionContro
 
 
 // Journal Routes
-Route::post('/journals', [JournalController::class, 'savePost']); // Submit a journal
+Route::post('/journal', [JournalController::class, 'saveJournal']); // Submit a journal
 // Route::get('/journals/{institution_id}', [JournalController::class, 'indexByInstitution']); // Get journals by institution ID
 // Route::get('journals/{id}/search', [JournalController::class, 'searchByJHI']); // Search journals by JHI
 Route::get('/journals', [JournalController::class, 'index']); // Get all journals
 
 Route::delete('journals/{id}', [JournalController::class, 'destroy']); // Delete a journal
 Route::get('journals/{id}', [JournalController::class,'show']); // Get details about a journal
-// Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
+Route::get('journals/search', [JournalController::class, 'search']); // Search all journals
 
+   // Routes for profession 
+   Route::post('/profession', [ProfessionController::class, 'newProfession']);
+   Route::get('/professions', [ProfessionController::class, 'getAllProfessions']);
+   Route::patch('/profession/edit/{id}', [ProfessionController::class, 'editProfession']);
+   Route::delete('/profession/{id}', [ProfessionController::class, 'deleteProfession']); 
+
+    //attaching and detaching Profession from the user
+    Route::post('/users/{userId}/professions/{professionId}', [ProfessionController::class,'attachProfessionToUser']);
+    Route::delete('/users/{userId}/professions/{professionId}', [ProfessionController::class,'detachProfessionFromUser']);
+    
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

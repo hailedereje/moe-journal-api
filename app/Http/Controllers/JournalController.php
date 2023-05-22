@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Journal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class JournalController extends Controller
 {
@@ -15,27 +16,54 @@ class JournalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function savePost(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'institution' => 'required',
-            'contributers' => 'required',
-            'journal_file' => 'required',
-            'status' => 'required',
-            'department_id' => 'required'
 
-        ]);
+public function saveJournal(Request $request)
+{
+    $validatedData = $request->validate([
+        'application_letter' => ['required', 'string'],
+        'journal_title' => ['required', 'string'],
+        'journal_zip_file' => ['required','file','mimes:zip,rar','max:2048'],
+        'department_id' => ['required', 'exists:departments,id'],
+        'journal_description' => ['required', 'string'],
+        'contributors' => ['required', 'string']
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+    $file = $request->file('journal_zip_file');
 
-        $journal = Journal::create($request->all());
-
-        return response()->json(['data' => $journal], 201);
+    if (!$file->isValid()) {
+        return response()->json(['message' => 'Invalid file.'], 400);
     }
-    
+
+    $fileName = time() . '_' . $file->getClientOriginalName();
+
+    try {
+        $filePath = $file->storeAs('uploads', $fileName, 'public');
+    } catch (\Throwable $th) {
+        return response()->json(['message' => 'Failed to store file.'], 500);
+    }
+
+    try {
+        $journal = Journal::create([
+            'application_letter' => $validatedData['application_letter'],
+            'journal_title' => $validatedData['journal_title'],
+            'department_id' => $validatedData['department_id'],
+            'journal_description' => $validatedData['journal_description'],
+            'contributors' => $validatedData['contributors'],
+            'journal_zip_file' => $filePath
+        ]);
+    } catch (\Throwable $th) {
+        // delete the file if journal creation fails
+        Storage::delete($filePath);
+
+        return response()->json(['message' => 'Failed to create journal.'], 500);
+    }
+
+    return response()->json(['data' => $journal], 201);
+}
+
+
+
+
 
    
 

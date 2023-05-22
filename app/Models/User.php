@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
+
+use App\Http\Controllers\JhiUserController;
+use App\Models\Profession;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -20,22 +22,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        // 'first_name',
-        // 'last_name',
-        // 'Email',
-        // 'password',
-        // 'photo',
-        // 'city',
-        // 'street',
-        // 'house_number',
-        // 'phone_number',
-        // 'address',
-        // 'Departement',
-        // 'Bank_account'
+       'first_name',
+       'last_name',
+       'middle_name',
+       'email',
+       'phone_number',
+       'address',
+       'jhi_id',
+       'role_id',
+       'password',
+    //    'remember_token',
+    //    'email_verified_at',
+    //    'confirm_password'
 
     ];
 
@@ -58,5 +56,13 @@ class User extends Authenticatable
     public static function deleteAll(){
         User::truncate();
         
+    }
+    public function professions()
+    {
+        return $this->belongsToMany(Profession::class);
+    }
+    public function jhi()
+    {
+        return $this->belongsTo(JhiUserController::class);
     }
 }
