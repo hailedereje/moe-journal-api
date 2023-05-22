@@ -101,7 +101,7 @@ public function deleteAppeal(Request $request, string $id) {
         Appeal::findOrFail($id)->delete();
         return response()->json([
             'status' => 1,
-            'message' => 'Department Deleted',
+            'message' => 'appeal Deleted',
             'code' => 200
         ]);
     } catch (Exception $e) {
