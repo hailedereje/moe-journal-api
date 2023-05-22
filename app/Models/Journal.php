@@ -21,4 +21,7 @@ class Journal extends Model
     public function department() {
         return $this->hasOne(Department::class);
     }
+    public function journalAppeals(){
+        return $this->hasMany(Appeal::class);
+    }
 }

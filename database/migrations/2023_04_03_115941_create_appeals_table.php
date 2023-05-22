@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('appeals', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger("journal_id")->nullable();
+            $table->text("introduction");
+            $table->text("body");
             $table->timestamps();
+            $table->foreign("Journal_id")->references("id")->on("journals");
         });
     }
 
